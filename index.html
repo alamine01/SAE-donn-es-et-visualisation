@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    
+    <title>SAE MMI - L'Explosion de l'Alternance</title>
+
+    <style>
+      /* Style pour correspondre à l'affiche */
+      body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        font-family: 'Arial', sans-serif;
+      }
+      
+      #scanning-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        display: flex; justify-content: center; align-items: center;
+        background: rgba(26, 43, 69, 0.7); /* Couleur de fond de l'affiche */
+        z-index: 999; color: white;
+        font-family: 'Arial', sans-serif; 
+        pointer-events: none;
+      }
+      
+      .hidden { 
+        opacity: 0; 
+        pointer-events: none; 
+        transition: opacity 0.5s;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="scanning-overlay">
+      <div style="text-align: center;">
+        <div style="font-size: 1.5rem; margin-bottom: 20px;">Scannez l'affiche ! 📱</div>
+        <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 20px;" id="status-message">Chargement...</div>
+      </div>
+    </div>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+
+      <a-camera position="0 0 0" look-controls="enabled: false">
+        <a-entity cursor="fuse: false; rayOrigin: mouse;"
+                  raycaster="far: 10000; objects: .clickable">
+        </a-entity>
+      </a-camera>
+
+      <!-- Éclairage pour rendre les éléments 3D visibles -->
+      <a-light type="ambient" color="#ffffff" intensity="0.8"></a-light>
+      <a-light type="directional" position="2 5 5" intensity="1"></a-light>
+
+      <a-entity mindar-image-target="targetIndex: 0" id="target">
+        
+        <!-- ============================================ -->
+        <!-- ÉLÉMENT 1 : Cercle "928 Apprentis" (CENTRE) -->
+        <!-- ============================================ -->
+        <!-- ============================================ -->
+        <!-- CERCLE CLIQUABLE EN HAUT DE L'AFFICHE -->
+        <!-- ============================================ -->
+        <a-entity position="0 0.5 0.1" id="element-click-top">
+            <!-- Cercle orange cliquable en haut -->
+            <a-cylinder 
+                class="clickable" 
+                id="circle-top-click"
+                color="#FF8C42" 
+                height="0.06" 
+                radius="0.12" 
+                opacity="0.8"
+                rotation="90 0 0"
+                animation="property: position; startEvents: targetFound; from: 0 0.5 0.05; to: 0 0.5 0.12; dur: 600; easing: easeOutBack">
+            </a-cylinder>
+            <!-- Icône "i" ou "+" pour indiquer que c'est cliquable -->
+            <a-text 
+                value="i" 
+                color="#FFFFFF" 
+                align="center" 
+                position="0 0 0.15" 
+                width="2"
+                font="roboto">
+            </a-text>
+        </a-entity>
+
+        <!-- ============================================ -->
+        <!-- ÉLÉMENT 1 : Animation "928 Apprentis" (apparaît au clic) -->
+        <!-- ============================================ -->
+        <a-entity position="0 0 0.1" id="element-928">
+            <!-- Texte "928" qui apparaît au clic (ENCORE PLUS HAUT) -->
+            <a-text 
+                id="text-928"
+                value="928" 
+                color="#FFFFFF" 
+                align="center" 
+                position="0 0.8 0.25" 
+                width="4"
+                font="roboto"
+                weight="bold"
+                scale="0 0 0">
+            </a-text>
+            <!-- Texte "Apprentis en 2026" qui apparaît au clic (ENCORE PLUS HAUT) -->
+            <a-text 
+                id="text-928-label"
+                value="Apprentis en 2026" 
+                color="#FFFFFF" 
+                align="center" 
+                position="0 0.65 0.25" 
+                width="3.5"
+                font="roboto"
+                weight="bold"
+                scale="0 0 0">
+            </a-text>
+        </a-entity>
+
+        <!-- ============================================ -->
+        <!-- ÉLÉMENT 2 : "78" en 2015 (GAUCHE) -->
+        <!-- ============================================ -->
+        <a-entity position="-0.5 0.3 0.1" id="element-2015">
+            <!-- Ombre portée -->
+            <a-cylinder 
+                id="shadow-2015"
+                color="#000000" 
+                height="0.015" 
+                radius="0.16" 
+                opacity="0.2"
+                rotation="90 0 0"
+                position="0.01 -0.02 0"
+                scale="0 0 0">
+            </a-cylinder>
+            <!-- Cercle cliquable pour 2015 (s'élève) - DESIGN RÉALISTE -->
+            <a-cylinder 
+                class="clickable" 
+                id="cyl-2015"
+                color="#FF8C42" 
+                height="0.06" 
+                radius="0.15" 
+                opacity="0"
+                rotation="90 0 0"
+                metalness="0.7"
+                roughness="0.3"
+                animation="property: position; startEvents: targetFound; from: 0 0 0.05; to: 0 0 0.12; dur: 600; delay: 200; easing: easeOutBack">
+            </a-cylinder>
+            <!-- Bordure brillante pour 2015 -->
+            <a-torus 
+                id="border-2015"
+                radius="0.15"
+                radius-tubular="0.008"
+                color="#FFFFFF"
+                opacity="0"
+                rotation="90 0 0"
+                metalness="1"
+                roughness="0.1">
+            </a-torus>
+            <!-- Texte "78" (grand) - Scale augmenté pour éviter la cassure -->
+            <a-entity position="0 0 0.15" scale="0 0 0" id="text-2015-container">
+                <a-entity scale="1.2 1.2 1.2">
+                    <a-text 
+                        id="text-2015"
+                        value="78" 
+                        color="#FFFFFF" 
+                        align="center" 
+                        position="0 0 0" 
+                        width="5"
+                        font="roboto"
+                        weight="bold">
+                    </a-text>
+                </a-entity>
+            </a-entity>
+            <!-- Texte "2015" (petit) en orange -->
+            <a-text 
+                id="text-2015-label"
+                value="2015" 
+                color="#FF8C42" 
+                align="center" 
+                position="0 -0.18 0.15" 
+                width="2.2"
+                font="roboto"
+                weight="bold"
+                scale="0 0 0">
+            </a-text>
+            <!-- Texte "D'où l'on vient" -->
+            <a-text 
+                id="text-2015-subtitle"
+                value="D'où l'on vient" 
+                color="#FFFFFF" 
+                align="center" 
+                position="0 -0.2 0.15" 
+                width="2.5"
+                font="roboto"
+                weight="bold"
+                scale="0 0 0">
+            </a-text>
+        </a-entity>
+
+        <!-- ============================================ -->
+        <!-- ÉLÉMENT 3 : "+5% Croissance" (DROITE) -->
+        <!-- ============================================ -->
+        <a-entity position="0.5 0.3 0.1" id="element-croissance">
+            <!-- Ombre portée -->
+            <a-box 
+                id="shadow-croissance"
+                color="#000000" 
+                width="0.32" 
+                height="0.17" 
+                depth="0.01"
+                opacity="0.2"
+                position="0.01 -0.02 0"
+                scale="0 0 0">
+            </a-box>
+            <!-- Boîte cliquable (s'élève) - DESIGN RÉALISTE -->
+            <a-box 
+                class="clickable" 
+                id="box-croissance"
+                color="#FF8C42" 
+                width="0.3" 
+                height="0.15" 
+                depth="0.04"
+                opacity="0"
+                position="0 0 0"
+                metalness="0.7"
+                roughness="0.3"
+                animation="property: position; startEvents: targetFound; from: 0 0 0.02; to: 0 0 0.08; dur: 600; delay: 300; easing: easeOutBack">
+            </a-box>
+            <!-- Bordure brillante pour croissance -->
+            <a-box 
+                id="border-croissance"
+                color="#FFFFFF"
+                width="0.32"
+                height="0.17"
+                depth="0.01"
+                opacity="0"
+                position="0 0 0.05"
+                metalness="1"
+                roughness="0.1">
+            </a-box>
+            <!-- Graphique (ligne ascendante) -->
+            <a-entity position="0 0 0.1" rotation="0 0 45">
+                <a-box 
+                    color="#FFFFFF" 
+                    width="0.15" 
+                    height="0.02" 
+                    depth="0.01"
+                    opacity="0"
+                    animation="property: opacity; to: 0.8; dur: 500; delay: 800; startEvents: targetFound">
+                </a-box>
+            </a-entity>
+            <!-- Texte "+5%" - Unifié avec scale pour éviter les cassures -->
+            <a-entity position="0 0.04 0.1" scale="0 0 0" id="text-croissance-container">
+                <a-entity scale="1.2 1.2 1.2">
+                    <a-text 
+                        id="text-croissance"
+                        value="+5%" 
+                        color="#FFFFFF" 
+                        align="center" 
+                        position="0 0 0" 
+                        width="4"
+                        font="roboto"
+                        weight="bold">
+                    </a-text>
+                </a-entity>
+            </a-entity>
+            <!-- Texte "Croissance" en orange -->
+            <a-text 
+                id="text-croissance-label"
+                value="Croissance" 
+                color="#FF8C42" 
+                align="center" 
+                position="0 -0.12 0.1" 
+                width="2.2"
+                font="roboto"
+                weight="bold"
+                scale="0 0 0">
+            </a-text>
+            <!-- Texte "vs N-1" -->
+            <a-text 
+                id="text-croissance-subtitle"
+                value="vs N-1" 
+                color="#FFFFFF" 
+                align="center" 
+                position="0 -0.18 0.1" 
+                width="1.8"
+                font="roboto"
+                weight="bold"
+                scale="0 0 0">
+            </a-text>
+        </a-entity>
+
+        <!-- ============================================ -->
+        <!-- ÉLÉMENT 4 : Section TOP RECRUTEMENTS (BAS) -->
+        <!-- ============================================ -->
+        <a-entity position="0 -0.4 0.1" id="element-top">
+            <!-- Zone cliquable -->
+            <a-box 
+                class="clickable" 
+                id="box-top"
+                color="#1A2B45" 
+                width="0.8" 
+                height="0.15" 
+                depth="0.02"
+                opacity="0"
+                animation="property: position; startEvents: targetFound; from: 0 0 0.02; to: 0 0 0.1; dur: 700; delay: 500; easing: easeOutBack">
+            </a-box>
+            <!-- Texte "TOP RECRUTEMENTS" -->
+            <a-text 
+                id="text-top"
+                value="TOP RECRUTEMENTS" 
+                color="#FF8C42" 
+                align="center" 
+                position="0 0.05 0.12" 
+                width="3"
+                font="roboto"
+                weight="bold"
+                opacity="0"
+                animation="property: opacity; to: 1; dur: 800; delay: 600; startEvents: targetFound">
+            </a-text>
+
+            <!-- Secteurs interactifs (apparaissent au clic) -->
+            <a-entity id="secteurs-container" scale="0 0 0">
+                <!-- Secteur 1: Médecine (31%) -->
+                <a-entity position="-1.2 -0.1 0.15" class="secteur" id="secteur-medical">
+                    <a-cylinder 
+                        class="clickable"
+                        color="#FF8C42" 
+                        height="0.05" 
+                        radius="0.08" 
+                        opacity="0.8"
+                        animation="property: rotation; to: 90 360 0; dur: 3000; loop: true; easing: linear; startEvents: secteurRevealed">
+                    </a-cylinder>
+                    <a-text value="31%" color="#FFFFFF" align="center" position="0 0 0.08" width="1.2" font="roboto" weight="bold"></a-text>
+                    <a-text value="Medecine" color="#FF8C42" align="center" position="0 -0.15 0.08" width="2.5" font="roboto" weight="bold"></a-text>
+                </a-entity>
+                
+                <!-- Secteur 2: Commerce/Communication (26%) -->
+                <a-entity position="-0.7 -0.1 0.15" class="secteur" id="secteur-commerce">
+                    <a-cylinder 
+                        class="clickable"
+                        color="#FF8C42" 
+                        height="0.05" 
+                        radius="0.08" 
+                        opacity="0.8"
+                        animation="property: rotation; to: 90 360 0; dur: 3000; loop: true; easing: linear; delay: 200; startEvents: secteurRevealed">
+                    </a-cylinder>
+                    <a-text value="26%" color="#FFFFFF" align="center" position="0 0 0.08" width="1.2" font="roboto" weight="bold"></a-text>
+                    <a-text value="Commerce" color="#FF8C42" align="center" position="0 -0.15 0.08" width="2" font="roboto" weight="bold"></a-text>
+                </a-entity>
+                
+                <!-- Secteur 3: Numérique (13%) -->
+                <a-entity position="0 -0.1 0.15" class="secteur" id="secteur-numerique">
+                    <a-cylinder 
+                        class="clickable"
+                        color="#FF8C42" 
+                        height="0.05" 
+                        radius="0.08" 
+                        opacity="0.8"
+                        animation="property: rotation; to: 90 360 0; dur: 3000; loop: true; easing: linear; delay: 400; startEvents: secteurRevealed">
+                    </a-cylinder>
+                    <a-text value="13%" color="#FFFFFF" align="center" position="0 0 0.08" width="1.2" font="roboto" weight="bold"></a-text>
+                    <a-text value="Numérique" color="#FF8C42" align="center" position="0 -0.15 0.08" width="2" font="roboto" weight="bold"></a-text>
+                </a-entity>
+                
+                <!-- Secteur 4: Lettres/Langues (12%) -->
+                <a-entity position="0.7 -0.1 0.15" class="secteur" id="secteur-lettres">
+                    <a-cylinder 
+                        class="clickable"
+                        color="#FF8C42" 
+                        height="0.05" 
+                        radius="0.08" 
+                        opacity="0.8"
+                        animation="property: rotation; to: 90 360 0; dur: 3000; loop: true; easing: linear; delay: 600; startEvents: secteurRevealed">
+                    </a-cylinder>
+                    <a-text value="12%" color="#FFFFFF" align="center" position="0 0 0.08" width="1.2" font="roboto" weight="bold"></a-text>
+                    <a-text value="Lettres" color="#FF8C42" align="center" position="0 -0.15 0.08" width="2" font="roboto" weight="bold"></a-text>
+                </a-entity>
+                
+                <!-- Secteur 5: Industrie/Artisanat (8%) -->
+                <a-entity position="1.2 -0.1 0.15" class="secteur" id="secteur-industrie">
+                    <a-cylinder 
+                        class="clickable"
+                        color="#FF8C42" 
+                        height="0.05" 
+                        radius="0.08" 
+                        opacity="0.8"
+                        animation="property: rotation; to: 90 360 0; dur: 3000; loop: true; easing: linear; delay: 800; startEvents: secteurRevealed">
+                    </a-cylinder>
+                    <a-text value="8%" color="#FFFFFF" align="center" position="0 0 0.08" width="1.2" font="roboto" weight="bold"></a-text>
+                    <a-text value="Industrie" color="#FF8C42" align="center" position="0 -0.15 0.08" width="2" font="roboto" weight="bold"></a-text>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- ============================================ -->
+        <!-- ÉLÉMENT 5 : "x12" (flèche entre 78 et 928) -->
+        <!-- ============================================ -->
+        <a-entity position="-0.25 0.15 0.1" id="element-x12">
+            <!-- Flèche 3D (s'élève) -->
+            <a-cone 
+                color="#FF8C42" 
+                radius-bottom="0.05" 
+                radius-top="0" 
+                height="0.1"
+                opacity="0"
+                rotation="0 0 -45"
+                animation="property: position; startEvents: targetFound; from: 0 0 0.05; to: 0 0 0.12; dur: 700; delay: 400; easing: easeOutBack">
+            </a-cone>
+            <!-- Texte "x12" -->
+            <a-text 
+                id="text-x12"
+                value="x12" 
+            color="#FF8C42" 
+                align="center" 
+                position="0.1 0 0.15" 
+                width="2"
+                font="roboto"
+                opacity="0"
+                animation="property: opacity; to: 1; dur: 1000; delay: 600; startEvents: targetFound">
+            </a-text>
+        </a-entity>
+
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Message de statut
+      const statusMessage = document.querySelector('#status-message');
+      
+      // Vérifier que tout est chargé
+      window.addEventListener('load', () => {
+        console.log("Page chargée");
+        if (statusMessage) {
+          statusMessage.textContent = "En attente de la caméra...";
+        }
+        
+        // Vérifier que le fichier .mind existe
+        fetch('./targets.mind')
+          .then(response => {
+            if (response.ok) {
+              console.log("✅ Fichier targets.mind trouvé");
+              if (statusMessage) {
+                statusMessage.textContent = "Prêt - Autorisez l'accès à la caméra";
+              }
+            } else {
+              console.error("❌ Fichier targets.mind non trouvé");
+              if (statusMessage) {
+                statusMessage.textContent = "Erreur: Fichier .mind non trouvé";
+                statusMessage.style.color = "#ff4444";
+              }
+            }
+          })
+          .catch(err => {
+            console.error("Erreur:", err);
+            if (statusMessage) {
+              statusMessage.textContent = "Erreur de chargement";
+              statusMessage.style.color = "#ff4444";
+            }
+          });
+      });
+      
+      // On récupère nos éléments
+      const target = document.querySelector('#target');
+      const overlay = document.querySelector('#scanning-overlay');
+      
+      // Éléments interactifs
+      const circleTopClick = document.querySelector('#circle-top-click');
+      const text928 = document.querySelector('#text-928');
+      
+      const cyl2015 = document.querySelector('#cyl-2015');
+      const text2015Container = document.querySelector('#text-2015-container');
+      const text2015 = document.querySelector('#text-2015');
+      const text2015Label = document.querySelector('#text-2015-label');
+      
+      const boxCroissance = document.querySelector('#box-croissance');
+      const textCroissanceContainer = document.querySelector('#text-croissance-container');
+      const textCroissance = document.querySelector('#text-croissance');
+      const textCroissanceLabel = document.querySelector('#text-croissance-label');
+      
+      const boxTop = document.querySelector('#box-top');
+      const textTop = document.querySelector('#text-top');
+      const secteursContainer = document.querySelector('#secteurs-container');
+      
+      // Variables d'état
+      let isRevealed928 = false;
+      let isRevealed2015 = false;
+      let isRevealedCroissance = false;
+      let isRevealedTop = false;
+
+      // 1. Quand l'affiche est trouvée par la caméra
+      target.addEventListener("targetFound", event => {
+        console.log("Cible trouvée !");
+        overlay.classList.add('hidden');
+        
+        // Afficher tous les éléments cliquables
+        if (circleTopClick) circleTopClick.setAttribute('opacity', '0.8');
+        cyl2015.setAttribute('opacity', '0.7');
+        boxCroissance.setAttribute('opacity', '0.7');
+        boxTop.setAttribute('opacity', '0.6');
+        
+        // Afficher les ombres
+        const shadow2015 = document.querySelector('#shadow-2015');
+        const shadowCroissance = document.querySelector('#shadow-croissance');
+        if (shadow2015) shadow2015.setAttribute('scale', '1 1 1');
+        if (shadowCroissance) shadowCroissance.setAttribute('scale', '1 1 1');
+        
+        // Réafficher les secteurs si TOP RECRUTEMENTS a déjà été cliqué
+        if (secteursContainer && isRevealedTop) {
+          secteursContainer.setAttribute('scale', '1 1 1');
+          // Redéclencher les animations des secteurs
+          const secteurs = document.querySelectorAll('.secteur');
+          secteurs.forEach((secteur, index) => {
+            setTimeout(() => {
+              secteur.emit('secteurRevealed');
+            }, index * 100);
+          });
+        }
+        
+        // Réafficher les textes "928" et "Apprentis en 2026" SEULEMENT si déjà cliqué
+        if (isRevealed928) {
+          if (text928) {
+            text928.setAttribute('scale', '1 1 1');
+          }
+          const text928Label = document.querySelector('#text-928-label');
+          if (text928Label) {
+            text928Label.setAttribute('scale', '1 1 1');
+          }
+        }
+        
+        // Réafficher "78" et "+5%" si déjà cliqués
+        if (isRevealed2015 && text2015Container) {
+          text2015Container.setAttribute('scale', '1 1 1');
+        }
+        if (isRevealedCroissance && textCroissanceContainer) {
+          textCroissanceContainer.setAttribute('scale', '1 1 1');
+        }
+        
+        // Réafficher "78" et "+5%" si déjà cliqués
+        if (isRevealed2015 && text2015Container) {
+          text2015Container.setAttribute('scale', '1 1 1');
+        }
+        if (isRevealedCroissance && textCroissanceContainer) {
+          textCroissanceContainer.setAttribute('scale', '1 1 1');
+        }
+      });
+
+      // 2. Quand l'affiche est perdue
+      target.addEventListener("targetLost", event => {
+        console.log("Cible perdue...");
+        overlay.classList.remove('hidden');
+        
+        // Cacher tous les éléments
+        if (circleTopClick) circleTopClick.setAttribute('opacity', '0');
+        cyl2015.setAttribute('opacity', '0');
+        boxCroissance.setAttribute('opacity', '0');
+        boxTop.setAttribute('opacity', '0');
+        
+        // Cacher les secteurs (mais garder l'état isRevealedTop)
+        if (secteursContainer) {
+          secteursContainer.setAttribute('scale', '0 0 0');
+        }
+        
+        // Cacher les textes "928" mais garder leur état
+        if (text928) {
+          text928.setAttribute('scale', '0 0 0');
+        }
+        const text928Label = document.querySelector('#text-928-label');
+        if (text928Label) {
+          text928Label.setAttribute('scale', '0 0 0');
+        }
+        
+        // NE PAS réinitialiser isRevealed928, isRevealed2015, etc. pour qu'ils réapparaissent
+        // Seulement réinitialiser si nécessaire
+      });
+
+      // 3. INTERACTION : Clic sur le cercle en haut - Affiche "928 Apprentis"
+      if (circleTopClick) {
+        circleTopClick.addEventListener('click', function (evt) {
+          if (!isRevealed928) {
+            console.log("Clic sur le cercle en haut !");
+            isRevealed928 = true;
+            
+            // Afficher les textes avec animation
+            if (text928) {
+              text928.setAttribute('animation__scale', 'property: scale; from: 0 0 0; to: 1 1 1; dur: 600; easing: easeOutBack');
+              text928.setAttribute('scale', '1 1 1');
+            }
+            
+            const text928Label = document.querySelector('#text-928-label');
+            if (text928Label) {
+              text928Label.setAttribute('animation__scale', 'property: scale; from: 0 0 0; to: 1 1 1; dur: 600; delay: 200; easing: easeOutBack');
+              setTimeout(() => {
+                text928Label.setAttribute('scale', '1 1 1');
+              }, 200);
+            }
+            
+            // Animation du cercle
+            circleTopClick.setAttribute('opacity', '1');
+            circleTopClick.setAttribute('animation__pulse', 'property: scale; to: 1.2 1.2 1.2; dir: alternate; dur: 800; loop: true; easing: easeInOutSine');
+          }
+        });
+      }
+
+      // 4. INTERACTION : Clic sur "78" (GAUCHE - 2015)
+      cyl2015.addEventListener('click', function (evt) {
+        if (!isRevealed2015) {
+            console.log("Clic sur 2015 !");
+            isRevealed2015 = true;
+            
+            // Afficher les textes (via le conteneur)
+            if (text2015Container) {
+              text2015Container.setAttribute('animation', 'property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack');
+              text2015Container.setAttribute('scale', '1 1 1');
+            }
+            if (text2015Label) {
+              text2015Label.setAttribute('animation', 'property: scale; from: 0 0 0; to: 1 1 1; dur: 500; delay: 200; easing: easeOutBack');
+            }
+            
+            // Animation du cercle
+            cyl2015.setAttribute('opacity', '0.8');
+            cyl2015.setAttribute('animation', 'property: scale; to: 1.2 1.2 1.2; dir: alternate; dur: 600; loop: true; easing: easeInOutSine');
+        }
+      });
+
+      // 5. INTERACTION : Clic sur "+5% Croissance" (DROITE)
+      boxCroissance.addEventListener('click', function (evt) {
+        if (!isRevealedCroissance) {
+            console.log("Clic sur croissance !");
+            isRevealedCroissance = true;
+            
+            // Afficher les textes (via le conteneur)
+            if (textCroissanceContainer) {
+              textCroissanceContainer.setAttribute('animation', 'property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack');
+              textCroissanceContainer.setAttribute('scale', '1 1 1');
+            }
+            if (textCroissanceLabel) {
+              textCroissanceLabel.setAttribute('animation', 'property: scale; from: 0 0 0; to: 1 1 1; dur: 500; delay: 200; easing: easeOutBack');
+            }
+            
+            // Animation de la boîte
+            boxCroissance.setAttribute('opacity', '0.8');
+            boxCroissance.setAttribute('animation', 'property: rotation; to: 0 0 5; dir: alternate; dur: 500; loop: true; easing: easeInOutSine');
+        }
+      });
+
+      // 6. INTERACTION : Clic sur "TOP RECRUTEMENTS" (BAS)
+      boxTop.addEventListener('click', function (evt) {
+        if (!isRevealedTop) {
+            console.log("Clic sur TOP RECRUTEMENTS !");
+            isRevealedTop = true;
+            
+            // Afficher le texte (déjà visible, juste le rendre plus visible)
+            textTop.setAttribute('opacity', '1');
+            
+            // Rendre la zone plus opaque
+            boxTop.setAttribute('opacity', '0.9');
+            
+            // Afficher les secteurs avec animation spectaculaire
+            if (secteursContainer) {
+              secteursContainer.setAttribute('animation', 'property: scale; from: 0 0 0; to: 1 1 1; dur: 800; easing: easeOutElastic');
+              
+              // Déclencher l'animation de rotation pour chaque secteur
+              const secteurs = document.querySelectorAll('.secteur');
+              secteurs.forEach((secteur, index) => {
+                setTimeout(() => {
+                  secteur.emit('secteurRevealed');
+                }, index * 100);
+              });
+            }
+        }
+      });
+    </script>
+  </body>
+</html>
